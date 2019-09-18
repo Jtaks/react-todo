@@ -1,0 +1,31 @@
+html {
+  box-sizing: border-box;
+  overflow-x: hidden;
+  height: 100%;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: 'Raleway', sans-serif;
+  margin: 0;
+  height: 100%;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+#app {
+  color: rgba(0, 0, 0, 0.8);
+  height: 100%;
+}
+
+input::placeholder {
+  color: rgba(128, 128, 128, 0.8);
+}
