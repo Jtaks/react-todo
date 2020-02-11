@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useSpring, useTransition, animated } from 'react-spring'
-import { useMesure } from './helper'
+import { useMesure } from './utils'
 
 let items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
 

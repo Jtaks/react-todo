@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { useSpring, animated } from 'react-spring'
-import { useMesure } from '../helper'
+import { useMesure } from '../hooks'
 
 import Slider from './Slider'
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { animated, useSpring, interpolate } from 'react-spring'
 import { useDrag } from 'react-use-gesture'
-import { clamp } from '../helper'
+import { clamp } from '../utils'
 
 const min = -55
 const max = 55
