@@ -1,12 +1,13 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { animated, useSpring, interpolate } from 'react-spring'
 import { useDrag } from 'react-use-gesture'
-import { clamp } from '../utils'
+import { clamp } from '../../utils'
 
 const min = -55
 const max = 55
 
-function Slider({
+export const Slider = ({
   children,
   leftContent,
   leftAction,
@@ -15,7 +16,7 @@ function Slider({
   transition,
   mesure,
   noDrag
-}) {
+}) => {
   const [{ x, background }, setSpring] = useSpring(() => ({
     x: 0,
     background: 'linear-gradient(120deg, #96fbc4 0%, #f9f586 100%)'
@@ -79,9 +80,18 @@ function Slider({
   )
 }
 
+Slider.propTypes = {
+  children: PropTypes.any,
+  leftContent: PropTypes.any,
+  leftAction: PropTypes.func,
+  rightContent: PropTypes.any,
+  rightAction: PropTypes.func,
+  transition: PropTypes.any,
+  mesure: PropTypes.any,
+  noDrag: PropTypes.any
+}
+
 Slider.defaultProps = {
   leftAction: () => {},
   rightAction: () => {}
 }
-
-export default Slider

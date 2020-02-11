@@ -1,37 +1,31 @@
-import React, { useState, useCallback, useRef } from 'react'
+import React, { useState, useCallback, useRef, useMemo } from 'react'
+import PropTypes from 'prop-types'
 import { useTransition, config } from 'react-spring'
 import nanoid from 'nanoid'
-
-import ListItem from './components/ListItem'
+import { applyFilter, Filters } from './utils'
+import { ListItem } from './components/ListItem'
 import Pill from './components/Pill'
 import ListView from './components/ListView'
-
 import { ThemeContext, defaultContext } from './ThemeContext'
+
 const { modes, theme } = defaultContext
 
-const Filters = {
-  ALL: 'All',
-  COMPLETE: 'Complete',
-  INCOMPLETE: 'Incomplete'
-}
-
-const applyFilter = (filter) => (item) =>
-  filter === Filters.ALL
-    ? true
-    : filter === Filters.COMPLETE
-    ? item.complete !== null
-    : item.complete === null
-
-function App(props) {
+export const App = (initProps) => {
   const inputRef = useRef()
 
   const [themeMode, setThemeMode] = useState(modes.LIGHT)
-  const [text, setText] = useState(props.text)
-  const [items, setItems] = useState(props.items)
-  const [filter, setFilter] = useState(props.filter)
+  const [text, setText] = useState(initProps.text)
+  const [items, setItems] = useState(initProps.items)
+  const [currentFilter, setCurrentFilter] = useState(initProps.filter)
+
+
+  const filterCallback = useMemo(
+    () => applyFilter(currentFilter),
+    [currentFilter]
+  )
 
   const listTransitions = useTransition(
-    items.filter(applyFilter(filter)),
+    items.filter(filterCallback),
     (item) => item.id,
     {
       config: config.stiff,
@@ -42,8 +36,9 @@ function App(props) {
       unique: true
     }
   )
+
   const nonIdealStateTransition = useTransition(
-    [`There's nothing here!`],
+    ['There\'s nothing here!'],
     null,
     {
       config: config.stiff,
@@ -65,6 +60,7 @@ function App(props) {
       inputRef.current.focus()
     }
   }, [text, setItems, setText])
+
   const toggleComplete = useCallback(
     (id) =>
       setItems((is) => {
@@ -79,10 +75,12 @@ function App(props) {
       }),
     [setItems]
   )
+
   const remove = useCallback(
     (id) => setItems((is) => [...is.filter((i) => i.id !== id)]),
     [setItems]
   )
+
   const toggleTheme = useCallback(
     () =>
       setThemeMode((prev) => (prev === modes.LIGHT ? modes.DARK : modes.LIGHT)),
@@ -169,31 +167,31 @@ function App(props) {
               <Pill
                 style={{
                   border:
-                    filter === Filters.ALL
+                    currentFilter === Filters.ALL
                       ? `1px solid ${theme[themeMode].color.muted}`
                       : 'initial'
                 }}
-                onClick={() => setFilter(Filters.ALL)}
+                onClick={() => setCurrentFilter(Filters.ALL)}
                 text={Filters.ALL}
               />
               <Pill
                 style={{
                   border:
-                    filter === Filters.COMPLETE
+                    currentFilter === Filters.COMPLETE
                       ? `1px solid ${theme[themeMode].color.muted}`
                       : 'initial'
                 }}
-                onClick={() => setFilter(Filters.COMPLETE)}
+                onClick={() => setCurrentFilter(Filters.COMPLETE)}
                 text={Filters.COMPLETE}
               />
               <Pill
                 style={{
                   border:
-                    filter === Filters.INCOMPLETE
+                    currentFilter === Filters.INCOMPLETE
                       ? `1px solid ${theme[themeMode].color.muted}`
                       : 'initial'
                 }}
-                onClick={() => setFilter(Filters.INCOMPLETE)}
+                onClick={() => setCurrentFilter(Filters.INCOMPLETE)}
                 text={Filters.INCOMPLETE}
               />
             </div>
@@ -228,10 +226,14 @@ function App(props) {
   )
 }
 
+App.propTypes = {
+  items: PropTypes.array.isRequired,
+  text: PropTypes.string.isRequired,
+  filter: PropTypes.oneOf([Filters.ALL, Filters.COMPLETE, Filters.INCOMPLETE])
+}
+
 App.defaultProps = {
   items: [],
   text: '',
   filter: Filters.INCOMPLETE
 }
-
-export default App
